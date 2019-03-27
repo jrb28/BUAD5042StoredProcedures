@@ -5,7 +5,7 @@ Created on Sun Mar 19 21:24:59 2017
 @author: jrbrad
 """
 
-import MySQLdb as mySQL 
+import mysql.connector as mySQL
 
 mysql_user_name = 'username'
 mysql_password = 'password'
@@ -19,13 +19,17 @@ def db_get_data(problem_id):
     cnx = db_connect()
                         
     cursor = cnx.cursor()
-    cursor.execute("CALL spGetBinpackCap(%s);" % problem_id)
-    bin_cap = cursor.fetchall()[0][0]
+    cursor.callproc("spGetBinpackCap", args=[problem_id])
+    for result in cursor.stored_results():
+        bin_cap = result.fetchall()[0][0]
+        break
     cursor.close()
     cursor = cnx.cursor()
-    cursor.execute("CALL spGetBinpackData(%s);" % problem_id)
+    cursor.callproc('spGetBinpackData',args=[problem_id])
     items = {}
-    blank = cursor.fetchall()
+    for result in cursor.stored_results():
+        blank = result.fetchall()
+        break
     for row in blank:
         items[row[0]] = row[1]
     cursor.close()
@@ -35,10 +39,12 @@ def db_get_data(problem_id):
 def getDBDataListEle(commandString):
     cnx = db_connect()
     cursor = cnx.cursor()
-    cursor.execute(commandString)
+    cursor.callproc(commandString)
     items = []
-    for item in list(cursor):
-        items.append(item[0])
+    for result in cursor.stored_results():
+        for item in result.fetchall():
+            items.append(item[0])
+        break
     cursor.close()
     cnx.close()
     return items
@@ -133,9 +139,9 @@ if __name__ == "__main__":
         Notice that the calls to the database must be excuted separately for each problem because the calls are within
         a for loop.
         """
-        dist = """ Insert your call to the database here """          # Dictionary with Key: (DC id, Store ID),  Value: distance
-        dcs =  """ Insert your call to the database here """          # Dictionary with Key: id  Value: List of [cap_cubic_feet, cap_doors, cap_drivers]
-        stores_vol = """ Insert your call to the database here """    # List of Lists: [[id, vol_daily], ...] 
+        dist = """ Insert your call to the database stored procedure here """          # Dictionary with Key: (DC id, Store ID),  Value: distance
+        dcs =  """ Insert your call to the database stored procedure here """          # Dictionary with Key: id  Value: List of [cap_cubic_feet, cap_doors, cap_drivers]
+        stores_vol = """ Insert your call to the database stored procedure here """    # List of Lists: [[id, vol_daily], ...] 
         store_ids = [x[0] for x in stores_vol]
         dc_ids = [x for x in dcs]
             
