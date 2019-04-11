@@ -146,7 +146,7 @@ if __name__ == "__main__":
         dc_ids = [x for x in dcs]
             
         my_team_or_name, result = trans(dist, dcs, stores_vol)
-        print result
+        print(result)
     
         """ This code checks the result to insures it feasibility """    
         okStoresAssigned, err_mess = checkUniqueAssign(store_ids,dc_ids,result)
@@ -157,20 +157,20 @@ if __name__ == "__main__":
             obj = 99999999999999999.0
         if not silent_mode:
             if okStoresAssigned or okCap:
-                print "P",problem_id," error: " 
+                print("P",problem_id," error: ")
                 if okStoresAssigned:
-                    print '; error with keys or multiple assignment'
+                    print('; error with keys or multiple assignment')
                 if okCap:
-                    print '; exceeded DC capacity'
+                    print('; exceeded DC capacity')
             else:
-                print "P",problem_id,"OK, annual miles:", obj
+                print("P",problem_id,"OK, annual miles:", obj)
         else:
             if okStoresAssigned or okCap:
-                print "Problem",problem_id," error: " 
+                print("Problem",problem_id," error: ") 
                 if okStoresAssigned:
-                    print 'either with keys or assignment of stores to multiple DCs'
-                    print err_mess
+                    print('either with keys or assignment of stores to multiple DCs')
+                    print(err_mess)
                 if okCap:
-                    print 'DC capacity exceeded'
+                    print('DC capacity exceeded')
             else:
-                print "Problem",problem_id," OK, annual miles:", obj
+                print("Problem",problem_id," OK, annual miles:", obj)
